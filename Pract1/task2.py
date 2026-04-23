@@ -1,7 +1,12 @@
 #1.Напишіть програму, яка знаходить середнє значення з трьох чисел, введених користувачем.
-num1 = float(input("Введіть перше число: "))
-num2 = float(input("Введіть друге число: "))
-num3 = float(input("Введіть третє число: "))
+count = int(input("Введіть кількість чисел: "))
 
-avg = (num1 + num2 + num3) / 3
+sum = 0
+
+for i in range(count):
+    num = float(input(f"Введіть число номер {i + 1}: "))
+
+    sum += num
+
+avg = sum / count
 print(f"Середнє значення: {avg}")

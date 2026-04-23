@@ -1,0 +1,28 @@
+{% extends "studentlist/base.html" %}
+
+{% block content %}
+<div class="profile-card">
+    <div class="profile-header">
+        {% if student.avatar %}
+            <img src="{{ student.avatar.url }}" class="profile-avatar">
+        {% else %}
+            <div class="profile-avatar-placeholder">
+                {{ student.last_name|first }}
+            </div>
+        {% endif %}
+        <div>
+            <p class="profile-name">{{ student }}</p>
+            <p class="profile-group">Група: {{ student.group }}</p>
+        </div>
+    </div>
+    <div class="profile-info">
+        {% if student.email %}
+        <p><span>Пошта</span>{{ student.email }}</p>
+        {% endif %}
+        {% if student.phone %}
+        <p><span>Телефон</span>{{ student.phone }}</p>
+        {% endif %}
+    </div>
+    <a href="{% url 'edit' student.id %}">Додати/Оновити контактну інформацію</a>
+</div>
+{% endblock %}

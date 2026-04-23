@@ -1,0 +1,68 @@
+{% extends "studentlist/base.html" %}
+
+{% block content %}
+<form action="{% url 'import-csv' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="file">
+</form>
+<a href="{% url 'get-pdf' %}">Завантажити pdf</a>
+<table border="1px">
+    <thead>
+    <tr>
+        <th>
+            ПІБ
+        </th>
+        <th>
+            Група
+        </th>
+        <th>
+            Предмет
+        </th>
+        <th>
+            Оцінка
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for student in student_list %}
+    {% if student.mark_set.all %}
+    {% for mark in student.mark_set.all %}
+
+    <tr>
+        {% if forloop.first %}
+        <td rowspan="{{ student.mark_set.count }}">
+            <a href="{% url 'profile' student.id %}">{{ student }}</a>
+        </td>
+        <td rowspan="{{ student.mark_set.count }}">
+            {{ student.group }}
+        </td>
+        {% endif %}
+        <td>
+            {{ mark.subject.name }}
+        </td>
+        <td>
+            {{ mark.mark }}
+        </td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr>
+        <td>
+            <a href="{% url 'profile' student.id %}">{{ student }}</a>
+        </td>
+        <td>
+            {{ student.group }}
+        </td>
+        <td>
+            ---
+        </td>
+        <td>
+            ---
+        </td>
+    </tr>
+    {% endif %}
+
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
