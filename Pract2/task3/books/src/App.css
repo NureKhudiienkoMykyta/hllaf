@@ -1,0 +1,82 @@
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background: #fafafa;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+input, select {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  outline: none;
+}
+
+input:focus, select:focus {
+  border-color: #888;
+}
+
+button {
+  padding: 8px 12px;
+  border: none;
+  background: #4f46e5;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #4338ca;
+}
+
+.card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid #e5e5e5;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  background: white;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.card h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.card p {
+  margin: 4px 0 0;
+  color: #666;
+  font-size: 14px;
+}
