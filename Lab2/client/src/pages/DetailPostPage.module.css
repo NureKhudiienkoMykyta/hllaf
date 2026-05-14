@@ -1,0 +1,41 @@
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.commentSection {
+  margin-top: 50px;
+  padding-top: 30px;
+  border-top: 2px solid #f0f2f5;
+}
+
+.commentSection h3 {
+  font-size: 1.5rem;
+  color: #1a1a1a;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  font-size: 1.2rem;
+  color: #007bff;
+  font-weight: 500;
+}
+
+.error {
+  max-width: 600px;
+  margin: 100px auto;
+  padding: 20px;
+  background-color: #fff5f5;
+  color: #e53e3e;
+  border-left: 5px solid #e53e3e;
+  border-radius: 4px;
+  text-align: center;
+}

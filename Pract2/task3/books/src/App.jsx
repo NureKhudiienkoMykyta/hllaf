@@ -12,7 +12,11 @@ function App() {
 
   const processedBooks = books
     .filter((book) => (status === "all" ? true : book.status === status))
-    .filter((book) => book.title.toLowerCase().includes(search.toLowerCase()))
+    .filter(
+      (book) =>
+        book.title.toLowerCase().includes(search.toLowerCase()) ||
+        book.author.toLowerCase().includes(search.toLowerCase()),
+    )
     .sort((a, b) => {
       if (sort === "newest") return b.id - a.id;
       if (sort === "oldest") return a.id - b.id;
