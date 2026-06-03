@@ -53,6 +53,97 @@ export const createPost = async (req, res) => {
   }
 };
 
+export const deletePost = async (req, res) => {
+  try {
+    const userId = req.user?.userId;
+    const postId = Number(req.params?.id);
+
+    const post = await prisma.post.delete({
+      where: {
+        id: postId,
+        authorId: userId,
+      },
+    });
+
+    return res.status(200).json({
+      message: "Пост успішно видалено",
+    });
+  } catch (error) {
+    console.error("Error createPost: ", error);
+    return res.status(500).json({ message: "Внутрішня помилка сервера." });
+  }
+};
+
+export const updatePost = async (req, res) => {
+  try {
+    const { title, content, categoryId } = req.body;
+    const userId = req.user?.userId;
+    const postId = Number(req.params?.id);
+
+    const parsedUserId = Number(userId);
+    if (isNaN(postId) || isNaN(parsedUserId)) {
+      return res.status(400).json({ message: "Невалідний формат ID." });
+    }
+
+    const existingPost = await prisma.post.findUnique({
+      where: { id: postId },
+    });
+
+    if (!existingPost) {
+      return res.status(404).json({ message: "Пост не знайдено." });
+    }
+
+    if (existingPost.authorId !== parsedUserId) {
+      return res
+        .status(403)
+        .json({ message: "У вас немає прав для редагування цього поста." });
+    }
+
+    let parsedCategoryId = undefined;
+    if (categoryId !== undefined) {
+      parsedCategoryId = Number(categoryId);
+      if (isNaN(parsedCategoryId)) {
+        return res
+          .status(400)
+          .json({ message: "Невалідний формат ID категорії." });
+      }
+
+      const existCategory = await prisma.category.findUnique({
+        where: { id: parsedCategoryId },
+      });
+
+      if (!existCategory) {
+        return res.status(404).json({ message: "Обраної категорії не існує!" });
+      }
+    }
+
+    const updatedPost = await prisma.post.update({
+      where: { id: postId },
+      data: {
+        title: title !== undefined ? title : undefined,
+        content: content !== undefined ? content : undefined,
+        categoryId: parsedCategoryId,
+      },
+      include: {
+        category: true,
+        author: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    return res.status(200).json({
+      message: "Пост успішно оновлено",
+      post: updatedPost,
+    });
+  } catch (error) {
+    console.error("Error updatePost: ", error);
+    return res.status(500).json({ message: "Внутрішня помилка сервера." });
+  }
+};
+
 export const getPosts = async (req, res) => {
   try {
     const { search, categoryId } = req.query;

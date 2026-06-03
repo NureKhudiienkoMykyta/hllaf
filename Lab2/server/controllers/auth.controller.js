@@ -58,6 +58,12 @@ export const login = async (req, res) => {
       where: {
         email,
       },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        password: true,
+      },
     });
 
     if (!user) {
@@ -72,7 +78,7 @@ export const login = async (req, res) => {
 
     const token = generateAccessToken({ userId: user.id });
 
-    return res.status(200).json({ token });
+    return res.status(200).json({ token, user });
   } catch (error) {
     console.error("Error login: ", error);
     return res.status(500).json({ message: "Внутрішня помилка сервера." });
