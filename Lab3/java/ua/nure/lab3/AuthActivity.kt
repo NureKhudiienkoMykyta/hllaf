@@ -8,10 +8,8 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.*
 import ua.nure.lab3.data.model.LoginRequest
 import ua.nure.lab3.data.model.RegisterRequest
 import ua.nure.lab3.data.network.RetrofitClient
@@ -31,7 +29,6 @@ class AuthActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
         val savedToken = TokenManager.getToken(this)
         if (savedToken != null) {
@@ -73,13 +70,12 @@ class AuthActivity : AppCompatActivity() {
         val password = etPassword.text.toString().trim()
         val name = etName.text.toString().trim()
 
-        // Базова валідація на пусті поля
         if (email.isEmpty() || password.isEmpty() || (!isLoginMode && name.isEmpty())) {
             Toast.makeText(this, "Будь ласка, заповніть усі поля!", Toast.LENGTH_SHORT).show()
             return
         }
 
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
                     if (isLoginMode) {
@@ -114,5 +110,6 @@ class AuthActivity : AppCompatActivity() {
     fun navigateToMain() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
+        finish()
     }
 }

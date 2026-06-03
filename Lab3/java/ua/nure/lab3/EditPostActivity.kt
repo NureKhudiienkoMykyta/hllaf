@@ -10,6 +10,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -58,7 +59,7 @@ class EditPostActivity : AppCompatActivity() {
     }
 
     fun loadCategoriesAndData() {
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             try {
                 val catResponse = withContext(Dispatchers.IO) {
                     RetrofitClient.apiService.getCategories()
@@ -125,7 +126,7 @@ class EditPostActivity : AppCompatActivity() {
         val token = TokenManager.getToken(this) ?: ""
         val requestBody = CreatePostRequest(title, content, categoryId)
 
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             try {
                 withContext(Dispatchers.IO) {
                     if (isEditMode) {

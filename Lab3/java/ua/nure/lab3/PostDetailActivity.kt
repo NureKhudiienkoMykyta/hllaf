@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
@@ -79,7 +80,7 @@ class PostDetailActivity : AppCompatActivity() {
     }
 
     fun loadPostDetails() {
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
                     RetrofitClient.apiService.getPostById(postId)
@@ -106,7 +107,7 @@ class PostDetailActivity : AppCompatActivity() {
     }
 
     fun loadComments() {
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
                     RetrofitClient.apiService.getPostComments(postId)
@@ -128,7 +129,7 @@ class PostDetailActivity : AppCompatActivity() {
         val token = TokenManager.getToken(this) ?: ""
         val requestBody = CreateCommentRequest(commentText)
 
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             try {
                 withContext(Dispatchers.IO) {
                     RetrofitClient.apiService.createComment(token, postId, requestBody)
@@ -145,7 +146,7 @@ class PostDetailActivity : AppCompatActivity() {
 
     fun deletePostFromServer() {
         val token = TokenManager.getToken(this) ?: ""
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             try {
                 withContext(Dispatchers.IO) {
                     RetrofitClient.apiService.deletePost(token, postId)

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -12,6 +11,7 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
@@ -56,26 +56,30 @@ class MainActivity : AppCompatActivity() {
 
         etSearch.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun beforeTextChanged(
-                p0: CharSequence?,
-                p1: Int,
-                p2: Int,
-                p3: Int
-            ) {
-            }
-
-            override fun onTextChanged(
-                p0: CharSequence?,
-                p1: Int,
-                p2: Int,
-                p3: Int
-            ) {
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 currentSearchText = p0?.toString()?.trim().orEmpty()
                 loadPosts()
             }
-
         })
+
+        spinnerCategories.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: android.view.View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val selectedCategory = categoriesList[position]
+                    currentCategoryId =
+                        if (selectedCategory.id == -1) null else selectedCategory.id
+                    loadPosts()
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {}
+            }
 
         btnLogout.setOnClickListener {
             TokenManager.clearAuthData(this)
@@ -92,14 +96,8 @@ class MainActivity : AppCompatActivity() {
         loadPosts()
     }
 
-    override fun onResume() {
-        super.onResume()
-        loadPosts()
-        loadCategories()
-    }
-
     fun loadCategories() {
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
                     RetrofitClient.apiService.getCategories()
@@ -115,26 +113,6 @@ class MainActivity : AppCompatActivity() {
                     ArrayAdapter(this@MainActivity, android.R.layout.simple_spinner_item, names)
                 spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spinnerCategories.adapter = spinnerAdapter
-
-
-                spinnerCategories.onItemSelectedListener =
-                    object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(
-                            parent: AdapterView<*>?,
-                            view: android.view.View?,
-                            position: Int,
-                            id: Long
-                        ) {
-                            val selectedCategory = categoriesList[position]
-                            currentCategoryId =
-                                if (selectedCategory.id == -1) null else selectedCategory.id
-                            loadPosts()
-                        }
-
-                        override fun onNothingSelected(p0: AdapterView<*>?) {}
-
-                    }
-
             } catch (e: Exception) {
                 e.printStackTrace()
                 Toast.makeText(
@@ -147,7 +125,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun loadPosts() {
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
                     RetrofitClient.apiService.getPosts(currentSearchText, currentCategoryId)
